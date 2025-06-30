@@ -12,6 +12,20 @@ namespace RevoUninstallerActivator
 {
     internal class Program
     {
+        public static void dbg_error()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(" [Error]");
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        public static void dbg_success()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(" [Success]");
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
         static bool has_admin()
         {
             using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
@@ -43,54 +57,61 @@ namespace RevoUninstallerActivator
         {
             Console.Title = "RevoUninstaller Pro Activator - Open source at: https://github.com/cledtz/RevoUninstallerProActivator";
 
+            Console.Write("[+] Checking for administrator permissions..");
+
             if (!has_admin())
             {
-                Console.WriteLine("Permissions: Error");
+                dbg_error();
                 MessageBox.Show("Please run the activator with administrator permissions.", "Error");
                 Environment.Exit(1);
             }
             else
             {
-                Console.WriteLine("Permissions: OK");
+                dbg_success();
             }
+
+            Console.Write("[+] Verifying Revo installation..");
 
             if (Directory.Exists(@"C:\ProgramData\VS Revo Group\Revo Uninstaller Pro"))
             {
-                Console.WriteLine("Enviroment: OK");
+                dbg_success();
 
                 if (File.Exists("C:\\ProgramData\\VS Revo Group\\Revo Uninstaller Pro\\revouninstallerpro5.lic"))
                 {
+                    Console.Write("[+] Uninstalling old license..");
                     File.Delete("C:\\ProgramData\\VS Revo Group\\Revo Uninstaller Pro\\revouninstallerpro5.lic");
                     if (!File.Exists("C:\\ProgramData\\VS Revo Group\\Revo Uninstaller Pro\\revouninstallerpro5.lic"))
                     {
-                        Console.WriteLine("Clean: OK");
+                        dbg_success();
                     }
                     else
                     {
-                        Console.WriteLine("Clean: Error");
+                        dbg_error();
                         MessageBox.Show("Cleaning failed.", "Error");
                         Environment.Exit(1);
                     }
                 }
 
+                Console.Write("[+] Installing license..");
+
                 extract_embedded_exe("RevoUninstallerActivator.Files.revouninstallerpro5.lic", "C:\\ProgramData\\VS Revo Group\\Revo Uninstaller Pro\\revouninstallerpro5.lic");
 
                 if (File.Exists("C:\\ProgramData\\VS Revo Group\\Revo Uninstaller Pro\\revouninstallerpro5.lic"))
                 {
-                    Console.WriteLine("Activation: OK");
-                    MessageBox.Show("Activation complete.", "Success");
+                    dbg_success();
+                    MessageBox.Show("Revo Uninstaller Pro has successfully been permanently activated.", "Success");
                     Environment.Exit(1);
                 }
                 else
                 {
-                    Console.WriteLine("Activation: Error");
+                    dbg_error();
                     MessageBox.Show("Activation failed.", "Error");
                     Environment.Exit(1);
                 }
             }
             else
             {
-                Console.WriteLine("Enviroment: Error");
+                dbg_error();
 
                 MessageBox.Show("RevoUninstaller is not installed. Please install it before executing the activation tool.", "Error");
                 Environment.Exit(1);
