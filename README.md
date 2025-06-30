@@ -11,3 +11,5 @@ Download the Activator from the release section.
 Run Activator with administrator permissions.
 
 Done. 
+
+Last update: June 30 2025
